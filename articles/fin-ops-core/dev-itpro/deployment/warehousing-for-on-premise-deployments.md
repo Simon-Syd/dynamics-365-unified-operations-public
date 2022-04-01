@@ -98,6 +98,57 @@ certificate](/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/f
 > [!IMPORTANT]
 > Environments with self-signed certificates will not be accessible from Android devices. If you need to access the environment from an Android device, use publicly trusted certificates for AD FS and Finance + Operations. Alternatively, you can also use AD CS to generate the certificates for AD FS and Finance + Operations. However, if you do this you will have to manually import the certificate authority certificate into your Android device.   
 
+# Configure the application by importing connection settings
+
+To make it easier to maintain and deploy the application on many mobile devices, you can import the connection settings instead of manually entering them on each device. This section explains how to create and import the settings.
+
+## Create a connection settings file or QR code
+
+You can import connection settings from either a file or a QR code. For both approaches, you must first create a settings file that uses JavaScript Object Notation (JSON) format and syntax. The file must include a connection list that contains the individual connections that have to be added. The following table summarizes the parameters that you must specify in the connection settings file.
+
+|Parameter|Description|
+|--------|--------|
+|ConnectionName |	Specify the name of the connection setting. The maximum length is 20 characters. Because this value is the unique identifier for a connection setting, make sure that it's unique in the list. If a connection that has the same name already exists on the device, it will be overridden by the settings from the imported file.
+|ActiveDirectoryClientAppId |	Specify the client ID that you made a note of while you were setting up Azure AD in the Create a web service application in Azure Active Directory section.
+|ActiveDirectoryResource| 	Specify the root URL of Supply Chain Management.
+|ActiveDirectoryTenant| 	Specify the Azure AD domain name that you're using with the Supply Chain Management server. This value has the form https://login.windows.net/<your-Azure-AD-domain-name>. Here is an example: https://login.windows.net/contosooperations.onmicrosoft.com. For more information about how to find your Azure AD domain name, see Locate important IDs for a user.
+|Company| 	Specify the legal entity in Supply Chain Management that you want the application to connect to.
+|ConnectionType| 	(Optional) Specify whether the connection setting should use a certificate or a client secret to connect to an environment. Valid values are "certificate" and "clientsecret". The default value is "certificate" **Note**: Client secrets can't be imported.
+|IsEditable| 	(Optional) Specify whether the app user should be able to edit the connection setting. Valid values are "true" and "false". The default value is "true".
+|IsDefault| 	(Optional) Specify whether the connection is the default connection. A connection that is set as the default connection will automatically be preselected when the app is opened. Only one connection can be set as the default connection. Valid values are "true" and "false". The default value is "false".
+|CertificateThumbprint| 	(Optional) For Windows devices, you can specify the certificate thumbprint for the connection. For Android devices, the app user must select the certificate the first time that a connection is used.
+
+The following example shows a valid connection settings file that contains two connections. As you can see, the connection list (named "ConnectionList" in the file) is an object that has an array that stores each connection as an object. Each object must be enclosed in braces ({}) and separated by commas, and the array must be enclosed in brackets ([]).
+JSON
+
+`{
+    "ConnectionList": [
+        {
+            "ActiveDirectoryClientAppId":"aaaaaaaa-bbbb-ccccc-dddd-eeeeeeeeeeee",
+            "ConnectionName": "Connection1",
+            "ActiveDirectoryResource": "https://yourenvironment.cloudax.dynamics.com",
+            "ActiveDirectoryTenant": "https://login.windows.net/contosooperations.onmicrosoft.com",
+            "Company": "USMF",
+            "IsEditable": false,
+            "IsDefaultConnection": true,
+            "CertificateThumbprint": "aaaabbbbcccccdddddeeeeefffffggggghhhhiiiii",
+            "ConnectionType": "certificate"
+        },
+        {
+            "ActiveDirectoryClientAppId":"aaaaaaaa-bbbb-ccccc-dddd-eeeeeeeeeeee",
+            "ConnectionName": "Connection2",
+            "ActiveDirectoryResource": "https://yourenvironment2.cloudax.dynamics.com",
+            "ActiveDirectoryTenant": "https://login.windows.net/contosooperations.onmicrosoft.com",
+            "Company": "USMF",
+            "IsEditable": true,
+            "IsDefaultConnection": false,
+            "ConnectionType": "clientsecret"
+        }
+    ]
+}`
+
+You can either save the information as a JSON file or generate a QR code that has the same content. If you save the information as a file, we recommend that you save it by using the default name, connections.json, especially if you will store it in the default location on each mobile device.
+
 ## Configure the application
 
 You must configure the Warehousing app on the device to connect to the server through the AD FS application.
