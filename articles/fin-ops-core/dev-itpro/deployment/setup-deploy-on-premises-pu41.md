@@ -412,6 +412,15 @@ The infrastructure\\ConfigTemplate.xml configuration file describes the followin
 - The file shares that are required for the application to work
 - The SQL cluster information 
 
+> [!NOTE] 
+> If you want to update an existing configtemplate.xml file you can run the following command.
+
+```powershell
+   .\Update-ConfigTemplate.ps1 -OldConfigTemplate .\ConfigTemplate-old.xml -NewConfigTemplate .\ConfigTemplate.xml
+    ```
+
+
+
     > [!IMPORTANT]
     > When you configure the Service Fabric cluster, make sure that there are three fault domains for the Primary node type (**OrchestratorType**). Also make sure that no more than one type of node is deployed on a single machine.
 
